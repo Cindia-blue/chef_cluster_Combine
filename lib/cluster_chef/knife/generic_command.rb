@@ -56,7 +56,6 @@ module ClusterChef
       perform_execution(target)
       ui.info("")
       ui.info "Finished! Current state:"
-      target.sync_to_cloud
       display(target)
     end
 

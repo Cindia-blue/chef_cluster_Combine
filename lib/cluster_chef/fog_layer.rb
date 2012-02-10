@@ -37,10 +37,6 @@ module ClusterChef
         # :instance_initiated_shutdown_behavior => instance_initiated_shutdown_behavior,
         :availability_zone => self.default_availability_zone,
         :monitoring => cloud.monitoring,
-
-         # for-vsphere
-        :template_path => cloud.image_id,
-        :name => fullname,
       }
     end
 

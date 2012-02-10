@@ -98,8 +98,8 @@ module ClusterChef
       delegate_to_fog_servers( :reload  )
     end
 
-    def create_servers( threaded = false )
-      delegate_to_servers( :create_server, threaded )
+    def create_servers
+      delegate_to_servers( :create_server )
     end
 
     def delete_chef
@@ -107,8 +107,8 @@ module ClusterChef
     end
 
     def sync_to_cloud
-      #sync_keypairs
-      #sync_security_groups
+      sync_keypairs
+      sync_security_groups
       delegate_to_servers( :sync_to_cloud )
     end
 
@@ -161,8 +161,7 @@ module ClusterChef
           "Name"   => svr.fullname,
           "Facet"  => svr.facet_name,
           "Index"  => svr.facet_index,
-          #"Chef?"  => (svr.chef_node? ? "yes" : "[red]no[reset]"),
-          "Chef?"  => (svr.in_chef? ? "yes" : "[red]no[reset]"),
+          "Chef?"  => (svr.chef_node? ? "yes" : "[red]no[reset]"),
           "Bogus"  => (svr.bogus? ? "[red]#{svr.bogosity}[reset]" : ''),
           "Env"    => svr.environment,
         }
@@ -178,15 +177,13 @@ module ClusterChef
               "Image"      => fs.image_id,
               "AZ"         => fs.availability_zone,
               "SSH Key"    => fs.key_name,
-              #"State"      => "[#{MACHINE_STATE_COLORS[fs.state] || 'white'}]#{fs.state}[reset]",
-              "State"      => "[#{svr.running? ? 'green' : 'blue'}]#{fs.state}[reset]",
+              "State"      => "[#{MACHINE_STATE_COLORS[fs.state] || 'white'}]#{fs.state}[reset]",
               "Public IP"  => fs.public_ip_address,
               "Private IP" => fs.private_ip_address,
-              #"Created At" => fs.created_at.strftime("%Y%m%d-%H%M%S")
-              "Created At" => fs.created_at ? fs.created_at.strftime("%Y%m%d-%H%M%S") : nil
+              "Created At" => fs.created_at.strftime("%Y%m%d-%H%M%S")
             )
         else
-          hsh["State"] = "not exit"
+          hsh["State"] = "not running"
         end
         hsh['Volumes'] = []
         svr.composite_volumes.each do |name, vol|

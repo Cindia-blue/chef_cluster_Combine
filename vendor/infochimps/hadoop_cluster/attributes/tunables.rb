@@ -7,10 +7,10 @@ default[:cluster_size] = 5
 # You may wish to set the following to the same as your HDFS block size, esp if
 # you're seeing issues with s3:// turning 1TB files into 30_000+ map tasks
 #
-default[:hadoop][:min_split_size]  = (128 * 1024 * 1024)
-default[:hadoop][:s3_block_size]   = (128 * 1024 * 1024)
-default[:hadoop][:hdfs_block_size] = (128 * 1024 * 1024)
-default[:hadoop][:dfs_replication] =  3
+default[:hadoop][:min_split_size]  = nil
+default[:hadoop][:s3_block_size]   = nil
+default[:hadoop][:hdfs_block_size] = nil
+default[:hadoop][:dfs_replication] =  1
 
 default[:hadoop][:namenode   ][:handler_count]       = 40
 default[:hadoop][:jobtracker ][:handler_count]       = 40

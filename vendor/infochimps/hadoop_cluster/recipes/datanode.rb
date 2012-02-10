@@ -24,10 +24,20 @@ include_recipe "runit"
 
 include_recipe "hadoop_cluster::cluster_conf"
 
+script "chown_datanode" do
+  interpreter "bash"
+  cwd "#{node[:hadoop][:common_home_dir]}"
+  code <<-EOH
+     chown -R hdfs:hadoop /home/ubuntu/hadoop/hadoop-0.23.0/logs
+     chown -R hdfs:hadoop /home/ubuntu/hadoop/hdfs/data
+  EOH
+end
+
 #hadoop_service(:tasktracker)
 script "start_datanode" do
   interpreter "bash"
   cwd "#{node[:hadoop][:common_home_dir]}"
+  user 'hdfs'
   code <<-EOH 
    ./sbin/hadoop-daemon.sh start datanode
   EOH

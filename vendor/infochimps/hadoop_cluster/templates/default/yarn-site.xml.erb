@@ -44,13 +44,11 @@
 <value><%= @hadoop[:nodemanager][:local_dirs] %></value>
 <description>the local directories used by the nodemanager</description>
 </property>
-<!--
 <property>
 <name>yarn.nodemanager.address</name>
-<value>@hadoop[:nodemanager][:addr] %>:#@hadoop[:nodemanager][:port] %></value>
+<value>@hadoop[:nodemanager][:addr] %>:<%= @hadoop[:resourcemanager][:port] %></value>
 <description>the nodemanagers bind to this port</description>
 </property>
--->
 <property>
 <name>yarn.nodemanager.resource.memory-mb</name>
 <value>4096</value>

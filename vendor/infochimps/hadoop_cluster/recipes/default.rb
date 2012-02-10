@@ -92,13 +92,13 @@ puts node[:hadoop][:home_dir]
 #%w[tmp log].each{|svc| directory("#{node[:hadoop][:home_dir]}/#{svc}"){ action(:create) ; owner 'mapred' ; group "hadoop"; mode "0775" } }
 
 
-%w[hdfs log].each{|svc| directory("#{node[:hadoop][:common_home_dir]}/#{svc}"){ action(:create) ; owner 'hdfs' ; group "hadoop"; mode "0775" } }
+%w[hdfs tmp logs].each{|svc| directory("#{node[:hadoop][:common_home_dir]}/#{svc}"){ action(:create) ; owner 'hdfs' ; group "hadoop"; mode "0775" } }
 
 %w[name secondary data].each{|svc| directory("#{node[:hadoop][:common_home_dir]}/hdfs/#{svc}"){ action(:create) ; owner 'hdfs' ; group "hadoop"; mode "0775" } }
 
 %w[local].each{|svc| directory("#{node[:hadoop][:maper_dir]}/#{svc}"){ action(:create) ; owner 'mapred' ; group "hadoop"; mode "0775" } }
 
-%w[logs].each{|svc| directory("#{node[:hadoop][:common_home_dir]}/#{svc}"){ action(:create) ; owner 'mapred' ; group "hadoop"; mode "0775" } }
+#%w[logs].each{|svc| directory("#{node[:hadoop][:common_home_dir]}/#{svc}"){ action(:create) ; owner 'mapred' ; group "hadoop"; mode "0775" } }
 
 # Namenode metadata striped across all persistent dirs
 #volume_dirs('hadoop.namenode.data') do
@@ -150,8 +150,8 @@ puts node[:hadoop][:home_dir]
 #  mode          "0777"
 #end
 
-%w[namenode secondarynn datanode].each{|svc| directory("#{node[:hadoop][:common_home_dir]}/log/#{svc}"){ action(:create) ; owner 'hdfs'   ; group "hadoop"; mode "0775" } }
-%w[resourcemanager nodemanager].each{|svc| directory("#{node[:hadoop][:common_home_dir]}/log/#{svc}"){ action(:create) ; owner 'mapred' ; group "hadoop"; mode "0775" } }
+#%w[namenode secondarynn datanode].each{|svc| directory("#{node[:hadoop][:common_home_dir]}/logs/#{svc}"){ action(:create) ; owner 'hdfs'   ; group "hadoop"; mode "0775" } }
+#%w[resourcemanager nodemanager].each{|svc| directory("#{node[:hadoop][:common_home_dir]}/logs/#{svc}"){ action(:create) ; owner 'mapred' ; group "hadoop"; mode "0775" } }
 
 directory ("/tmp/nm"){ action(:create) ; owner 'mapred' ; group "hadoop"; mode "0775" }
 %w[local app-logs  logs].each{|svc| directory("/tmp/nm/#{svc}"){ action(:create) ; owner 'mapred' ; group "hadoop"; mode "0775" } }

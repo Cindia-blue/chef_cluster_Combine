@@ -31,7 +31,7 @@ class Chef
       end
 
       banner "knife cluster launch CLUSTER_NAME [FACET_NAME [INDEXES]] (options)"
-      [ :ssh_port, :ssh_user, :ssh_password, :identity_file, :use_sudo,
+      [ :ssh_port, :ssh_password, :identity_file, :use_sudo,
         :prerelease, :bootstrap_version, :template_file, :distro,
         :bootstrap_runs_chef_client, :host_key_verify
       ].each do |name|
@@ -78,10 +78,9 @@ class Chef
 
         # Launch servers
         section("Launching machines", :green)
-        target.create_servers(true)
+        target.create_servers
 
         ui.info("")
-
         display(target)
 
         # As each server finishes, configure it
@@ -106,21 +105,19 @@ class Chef
 
         # Try SSH
         unless config[:dry_run]
-          nil until tcp_test_ssh(server.fog_server.ipaddress){ sleep @initial_sleep_delay ||= 10  }#ipaddress
+          nil until tcp_test_ssh(server.fog_server.dns_name){ sleep @initial_sleep_delay ||= 10  }#ipaddress
         end
 
         # Make sure our list of volumes is accurate
-        #ClusterChef.fetch_fog_volumes
-        #server.discover_volumes!
+        ClusterChef.fetch_fog_volumes
+        server.discover_volumes!
 
         # Attach volumes, etc
         server.sync_to_cloud
-        # Save node to chef
-        server.sync_to_chef
 
         # Run Bootstrap
         if config[:bootstrap]
-          run_bootstrap(server, server.fog_server.ipaddress)
+          run_bootstrap(server, server.fog_server.dns_name)
         end
       end
 

@@ -36,28 +36,16 @@ module ClusterChef
     #     region         'us-east-1d'
     #   end
     #
-    def cloud cloud_provider=nil, hsh={}, &block
-      case cloud_provider
-        when :ec2
-          #@cloud ||= ClusterChef::Cloud::Ec2.new
-          @cloud ||=ClusterChef::Cloud::Ec2.new(self)
-        when :vsphere
-          @cloud ||= ClusterChef::Cloud::Vsphere.new(self)
-        else
-          @cloud ||= ClusterChef::Cloud::Vsphere.new(self)
-          # raise "Only supports ec2 and vsphere so far" if @cloud.nil?
-      end
-      @cloud.configure(hsh, &block) if block
+    def cloud(cloud_provider=nil, attrs={}, &block)
+      raise "Only have ec2 so far" if cloud_provider && (cloud_provider != :ec2)
+      @cloud ||= ClusterChef::Cloud::Ec2.new(self)
+      @cloud.configure(attrs, &block)
       @cloud
     end
 
     # sugar for cloud(:ec2)
     def ec2(attrs={}, &block)
       cloud(:ec2, attrs, &block)
-    end
-
-    def vsphere(attrs={}, &block)
-      cloud(:vsphere, attrs, &block)
     end
 
     # Magic method to describe a volume

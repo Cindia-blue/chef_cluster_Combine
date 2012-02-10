@@ -130,7 +130,6 @@ module ClusterChef
         super *args
         @settings[:security_groups]      ||= Mash.new
         @settings[:user_data]            ||= Mash.new
-        #@name = :ec2;
       end
 
       #
@@ -207,7 +206,6 @@ module ClusterChef
       # Utility methods
 
       def image_info
-         puts "ec2 image"
         Chef::Config[:ec2_image_info][ [region, bits, backing, image_name] ] or ( ui.warn "Make sure to define the machine's region, bits, backing and image_name. (Have #{[region, bits, backing, image_name].inspect})" ; {} )
       end
 
@@ -227,7 +225,6 @@ module ClusterChef
       end
 
       def flavor_info
-         puts "ec2 flavor"
         FLAVOR_INFO[flavor] or ( ui.warn "Please define the machine's flavor: have #{self.inspect}" ; {} )
       end
 
@@ -411,49 +408,5 @@ module ClusterChef
     class Terremark < Base
       # password, username, service
     end
-
-    # for-vsphere
-    class Vsphere < Ec2
-      has_keys(
-        :host, :user, :pass, :dc, :templates_folder,
-        :security_groups, :availability_zones, :backing
-      )
-
-      def initialize *args
-        #puts "vsphere initialize"
-        super *args
-        
-        #@name = :vsphere;
-
-      end
-
-      # Utility methods
-
-      def image_info
-        #puts "vsphere image_info"
-        #puts image_name
-        IMAGE_INFO[ [bits, image_name] ] or warn "Make sure to define the machine's region, bits, backing and image_name. (Have #{[region, bits, backing, image_name].inspect})"
-      end
-
-      def flavor_info
-        #puts "vsphere flavor_info"
-        #puts flavor
-        FLAVOR_INFO[ flavor ] || {} # or raise "Please define the machine's flavor."
-      end
-
-      FLAVOR_INFO = {
-        't1.micro' => { :price => 0.02, :bits => '64-bit', :ram => 686, :cores => 1, :core_size => 0.25, :inst_disks => 0, :inst_disk_size => 0, },
-        'm1.small' => { :price => 0.085, :bits => '32-bit', :ram => 1024, :cores => 1, :core_size => 1, :inst_disks => 1, :inst_disk_size => 0, },
-      }
-
-      IMAGE_INFO = {
-        #
-        # Maverick (Ubuntu 10.10)
-        #
-        %w[ 32-bit  maverick ] => { :image_id => 'ubuntu-10-04-server-i386', :ssh_user => 'ubuntu', :bootstrap_distro => "ubuntu10.04-gems", },
-        %w[ 32-bit  oneiric  ] => { :image_id => 'ubuntu-11-10-server-i386', :ssh_user => 'ubuntu', :bootstrap_distro => "ubuntu11.10-gems", },
-      }
-    end
-    
   end
 end

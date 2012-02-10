@@ -24,13 +24,9 @@ class Chef
     class ClusterBootstrap < ClusterChef::Script
 
       option :ssh_user,
-        :short => "-x USERNAME",
-        :long => "--ssh-user USERNAME",
+        :long        => "--ssh-user USERNAME",
+        :short       => "-x USERNAME",
         :description => "The ssh username"
-      option :ssh_password,
-        :short => "-P PASSWORD",
-        :long => "--ssh-password PASSWORD",
-        :description => "The ssh password"
       option :bootstrap_runs_chef_client,
         :long        => "--[no-]bootstrap-runs-chef-client",
         :description => "If bootstrap is invoked, the bootstrap script causes an initial run of chef-client (default true).",
@@ -65,7 +61,7 @@ class Chef
       def perform_execution(target)
         target.each do |svr|
           if(svr.fog_server != nil )
-            run_bootstrap(svr, svr.fog_server.ipaddress)#ipaddress
+            run_bootstrap(svr, svr.fog_server.dns_name)#ipaddress
           end
         end
       end

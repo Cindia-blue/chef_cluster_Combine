@@ -25,18 +25,44 @@
 # Find these variables in ../hadoop_cluster/libraries/hadoop_cluster.rb
 #
 
-node[:hadoop][:namenode   ][:addr] = discover(:hadoop, :namenode   ).private_ip rescue nil
-node[:hadoop][:resourcemanager ][:addr] = discover(:hadoop, :resourcemanager).private_ip rescue nil
-node[:hadoop][:secondarynn][:addr] = discover(:hadoop, :secondarynn).private_ip rescue nil
-node[:hadoop][:nodemanager][:addr] = discover(:hadoop, :nodemanager).private_ip rescue nil
+#node[:hadoop][:namenode   ][:addr] = discover(:hadoop, :namenode   ).public_ip rescue nil
+#node[:hadoop][:resourcemanager ][:addr] = discover(:hadoop, :resourcemanager).ip rescue nil
+#node[:hadoop][:secondarynn][:addr] = discover(:hadoop, :secondarynn).public_ip rescue nil
+#node[:hadoop][:nodemanager][:addr] = discover(:hadoop, :nodemanager).pubiic_ip rescue nil
 
-if (!node[:hadoop][:namenode   ][:addr])
-  node[:hadoop][:namenode   ][:addr] = '10.112.126.26'
-end
-#
-if (!node[:hadoop][:resourcemanager   ][:addr])
-  node[:hadoop][:resourcemanager   ][:addr] = '10.112.126.161'
-end
+db_server = search(:node,"name:hadoop_demo-master-0")
+puts "db_server ="
+puts db_server[0].to_s
+node[:hadoop][:namenode   ][:addr] = "#{db_server[0][:ipaddress]}"
+puts "private_ip of resourcemanager ="
+puts node[:hadoop][:namenode   ][:addr]
+
+db_server1 = search(:node,"name:hadoop_demo-master-1")
+puts "db_server ="
+puts db_server1[0].to_s
+node[:hadoop][:resourcemanager ][:addr] = "#{db_server[0][:ipaddress]}"
+puts "private_ip of resourcemanager ="
+puts node[:hadoop][:resourcemanager ][:addr]
+
+db_server2 = search(:node,"name:hadoop_demo-work-0")
+puts "db_server ="
+puts db_server2[0].to_s
+node[:hadoop][:datanode ][:addr] = "#{db_server[0][:ipaddress]}"
+puts "private_ip of resourcemanager ="
+puts node[:hadoop][:datanode ][:addr]
+
+
+db_server3 = search(:node,"name:hadoop_demo-work-1")
+puts "db_server ="
+puts db_server3[0].to_s
+node[:hadoop][:nodemanager ][:addr] = "#{db_server[0][:ipaddress]}"
+puts "private_ip of resourcemanager ="
+puts node[:hadoop][:nodemanager ][:addr]
+
+
+#if (!node[:hadoop][:resourcemanager   ][:addr])
+#  node[:hadoop][:resourcemanager   ][:addr] = '10.112.126.161'
+#end
 #
 #if (!node[:hadoop][:nodemanager   ][:addr])
 #  node[:hadoop][:nodemanager   ][:addr] = '10.112.126.26'

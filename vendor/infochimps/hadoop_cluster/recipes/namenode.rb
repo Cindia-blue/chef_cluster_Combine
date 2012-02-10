@@ -46,11 +46,21 @@ include_recipe "runit"
 
 include_recipe "hadoop_cluster::cluster_conf"
 
-hadoop_service(:namenode)
+#hadoop_service(:namenode)
+
+script "chown_Namenode" do
+  interpreter "bash"
+  cwd "#{node[:hadoop][:common_home_dir]}"
+  code <<-EOH
+     chown -R hdfs:hadoop /home/ubuntu/hadoop/hadoop-0.23.0/logs
+     chown -R hdfs:hadoop /home/ubuntu/hadoop/hdfs/name
+  EOH
+end
 
 script "start_Namenode" do
   interpreter "bash"
   cwd "#{node[:hadoop][:common_home_dir]}"
+  user 'hdfs'
   code <<-EOH
      ./libexec/hadoop-config.sh
      ./libexec/hdfs-config.sh

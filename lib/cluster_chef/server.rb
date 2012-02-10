@@ -21,17 +21,7 @@ module ClusterChef
       @tags = { "name" => name, "cluster" => cluster_name, "facet"   => facet_name, "index" => facet_index, }
       ui.warn("Duplicate server #{[self, facet.name, idx]} vs #{@@all[fullname]}") if @@all[fullname]
       @@all[fullname] = self
-
-      #@chef_node ||= Chef::Node.load( fullname ) # load chef_node # for-vsphere
-       # load chef_node # for-vsphere
-      begin
-        @chef_node = Chef::Node.load(fullname)
-        rescue Net::HTTPServerException => e
-        raise unless e.response.code == '404'
-      end
-
     end
-    
 
     def fullname fn=nil
       @fullname = fn if fn
@@ -79,13 +69,11 @@ module ClusterChef
     end
 
     def running?
-      #has_cloud_state?('running')
-      has_cloud_state?('poweredOn')
+      has_cloud_state?('running')
     end
 
     def startable?
-      #has_cloud_state?('stopped')
-      has_cloud_state?('poweredOff')
+      has_cloud_state?('stopped')
     end
 
     def launchable?
@@ -231,11 +219,6 @@ module ClusterChef
       return server
     end
 
-    def self.get_by_name(node_name)
-      ( cluster_name, facet_name, facet_index ) = node_name.split(/-/)
-      self.get(cluster_name, facet_name, facet_index)
-    end
-
     def self.all
       @@all
     end
@@ -246,9 +229,9 @@ module ClusterChef
 
     def sync_to_cloud
       step "Syncing to cloud"
-#      attach_volumes
-#      create_tags
-#      associate_public_ip
+      attach_volumes
+      create_tags
+      associate_public_ip
     end
 
     def sync_to_chef
@@ -265,7 +248,6 @@ module ClusterChef
     end
 
     def create_tags
-      return unless cloud.name == :ec2 # for-vsphere
       return unless created?
       step("  labeling servers and volumes")
       fog_create_tags(fog_server, self.fullname, tags)

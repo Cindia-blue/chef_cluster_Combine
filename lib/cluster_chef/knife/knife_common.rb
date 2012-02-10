@@ -96,14 +96,11 @@ module ClusterChef
       until remaining.empty?
         remaining = remaining.select(&:alive?)
         if config[:verbose]
-          #ui.info "waiting: #{total - remaining.length} / #{total}, #{(Time.now - start_time).to_i}s"
-          #sleep 5
-          puts "waiting for threads to complete: #{total - remaining.length} / #{total}, #{(Time.now - start_time).to_i}s"
-          sleep 30
+          ui.info "waiting: #{total - remaining.length} / #{total}, #{(Time.now - start_time).to_i}s"
+          sleep 5
         else
-          #ap config
           Formatador.redisplay_progressbar(total - remaining.length, total, {:started_at => start_time })
-          sleep 10
+          sleep 1
         end
       end
       # Collapse the threads
@@ -112,30 +109,19 @@ module ClusterChef
     end
 
     def bootstrapper(server, hostname)
-      
       bootstrap = Chef::Knife::Bootstrap.new
       bootstrap.config.merge!(config)
-
-      puts "config[:ssh_password] ="
-      puts config[:ssh_password] 
 
       bootstrap.name_args               = [ hostname ]
       bootstrap.config[:node]           = server
       bootstrap.config[:run_list]       = server.combined_run_list
       bootstrap.config[:ssh_user]       = config[:ssh_user]       || server.cloud.ssh_user
-      bootstrap.config[:ssh_password]   = config[:ssh_password]   
       bootstrap.config[:attribute]      = config[:attribute]
-
-      puts "bootstrap.config[:ssh_password]="
-      puts bootstrap.config[:ssh_password]
-      
-      #bootstrap.config[:identity_file]  = config[:identity_file]  || server.cloud.ssh_identity_file
+      bootstrap.config[:identity_file]  = config[:identity_file]  || server.cloud.ssh_identity_file
       bootstrap.config[:distro]         = config[:distro]         || server.cloud.bootstrap_distro
       bootstrap.config[:use_sudo]       = true unless config[:use_sudo] == false
       bootstrap.config[:chef_node_name] = server.fullname
       bootstrap.config[:client_key]     = server.client_key.body  if server.client_key.body
-
-      
 
       bootstrap
     end
