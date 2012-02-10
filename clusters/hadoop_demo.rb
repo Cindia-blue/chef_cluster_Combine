@@ -42,26 +42,28 @@ ClusterChef.cluster 'hadoop_demo' do
 
   role :hadoop
 #  role :hadoop_s3_keys
-  role :tuning
+#  role :tuning
   role :jruby
 #  role :pig
-  recipe 'hadoop_cluster::cluster_conf', :last
+#  recipe 'hadoop_cluster::cluster_conf', :last
 
   facet :master do
-    instances 2
+    instances 1
     role :hadoop_namenode
-    role :hadoop_resourcemanager
-    role :hadoop_datanode
-    role :hadoop_nodemanager
+  end
 
-#    role :hadoop_secondarynn
-#    role :hadoop_jobtracker
-#    role :hadoop_tasktracker
+ facet :master1 do
+    instances 1
+    role :hadoop_resourcemanager
   end
 
   facet :worker do
     instances 1
     role :hadoop_datanode
+  end
+
+  facet :worker1 do
+    instances 1
     role :hadoop_nodemanager
   end
 
