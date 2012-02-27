@@ -22,8 +22,11 @@
 include_recipe "hadoop_cluster"
 include_recipe "runit"
 
-include_recipe "hadoop_cluster"
-include_recipe "runit"
+#get local IP
+arg = `ifconfig eth0 |grep "inet addr"| cut -f 2 -d ":"|cut -f 1 -d " "`
+node[:hadoop][:namenode   ][:addr] = arg.chomp
+puts "private_ip of namenode ="
+puts node[:hadoop][:namenode   ][:addr]
 
 include_recipe "hadoop_cluster::cluster_conf"
 
@@ -38,16 +41,31 @@ script "chown_Namenode" do
   EOH
 end
 
+#format namenode
+script "Format_Namenode" do
+  interpreter "bash"
+  cwd "#{node[:hadoop][:common_home_dir]}"
+  user 'hdfs'
+  code <<-EOH
+     ./bin/hadoop namenode -format <<!
+Y
+!
+  EOH
+end
+
 #start namenode
 script "start_Namenode" do
   interpreter "bash"
   cwd "#{node[:hadoop][:common_home_dir]}"
   user 'hdfs'
   code <<-EOH
-     ./bin/hadoop namenode -format
      ./libexec/hadoop-config.sh
      ./libexec/hdfs-config.sh
      ./sbin/hadoop-daemon.sh start namenode
   EOH
 end
 
+
+#./bin/hadoop namenode -format <<!
+#     Y
+#     !

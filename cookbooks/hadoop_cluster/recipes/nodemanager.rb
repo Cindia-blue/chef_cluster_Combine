@@ -3,6 +3,12 @@
 
 include_recipe "hadoop_cluster"
 include_recipe "runit"
+
+arg2 = `ifconfig eth0 |grep "inet addr"| cut -f 2 -d ":"|cut -f 1 -d " "`
+node[:hadoop][:nodemanager   ][:addr] = arg2.chomp
+puts "private_ip of nodemanager ="
+puts node[:hadoop][:nodemanager   ][:addr]
+
 include_recipe "hadoop_cluster::cluster_conf"
 
 #change permission of file directory and prepare for start of nodemanager

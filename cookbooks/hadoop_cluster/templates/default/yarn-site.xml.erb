@@ -46,7 +46,7 @@
 </property>
 <property>
 <name>yarn.nodemanager.address</name>
-<value>@hadoop[:nodemanager][:addr] %>:<%= @hadoop[:resourcemanager][:port] %></value>
+<value><%=  @hadoop[:nodemanager][:addr] %>:<%= @hadoop[:nodemanager][:port] %></value>
 <description>the nodemanagers bind to this port</description>
 </property>
 <property>
